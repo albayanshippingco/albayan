@@ -34,6 +34,13 @@ body{
     background:#06101d;
     color:white;
     overflow-x:hidden;
+    /* لمنع شريط جوجل من إزاحة الموقع للأسفل */
+    top: 0 !important; 
+}
+
+/* إخفاء شريط جوجل العلوي المزعج */
+.goog-te-banner-frame {
+    display: none !important;
 }
 
 /* =====================================================
@@ -215,21 +222,43 @@ nav{
     color:white;
 }
 
-.lang-btn{
-    border:none;
-    background:linear-gradient(135deg,var(--primary),var(--secondary));
-    color:white;
-    padding:10px 18px;
-    border-radius:14px;
-    font-family:'Cairo',sans-serif;
-    font-weight:700;
-    cursor:pointer;
-    transition:var(--transition);
+/* =====================================================
+   GOOGLE TRANSLATE STYLES
+===================================================== */
+
+#google_translate_element select {
+    background: linear-gradient(135deg,var(--primary),var(--secondary));
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 12px;
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    outline: none;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
 }
 
-.lang-btn:hover{
-    transform:translateY(-3px);
-    box-shadow:var(--shadow);
+#google_translate_element select:hover {
+    transform: translateY(-2px);
+}
+
+#google_translate_element select option {
+    background: #0b1628;
+    color: white;
+}
+
+/* إخفاء نصوص وشعارات جوجل المرافقة للأداة */
+.goog-te-gadget {
+    color: transparent !important;
+    font-size: 0px;
+}
+.goog-te-gadget .goog-logo-link {
+    display: none;
+}
+.goog-te-gadget span {
+    display: none;
 }
 
 /* =====================================================
@@ -561,7 +590,7 @@ section{
 }
 
 /* =====================================================
-   FOOTER
+   FOOTER & SOCIAL
 ===================================================== */
 
 footer{
@@ -590,6 +619,29 @@ footer{
     max-width:420px;
     line-height:2;
     color:#c5d2eb;
+}
+
+.footer-social {
+    margin-top: 25px;
+}
+
+.facebook-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #1877F2;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 14px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: var(--transition);
+    box-shadow: 0 0 15px rgba(24, 119, 242, 0.3);
+}
+
+.facebook-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 25px rgba(24, 119, 242, 0.5);
 }
 
 .footer-links{
@@ -721,9 +773,8 @@ footer{
 
         <div class="nav-right">
 
-            <button class="lang-btn" id="langBtn">
-                EN
-            </button>
+            <!-- أداة ترجمة جوجل محصورة باللغتين العربية والإنجليزية -->
+            <div id="google_translate_element"></div>
 
             <div class="menu-btn" id="menuBtn">
                 <i class="fa-solid fa-bars"></i>
@@ -881,7 +932,7 @@ footer{
 </section>
 
 <!-- =====================================================
-   NEWS🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴
+   NEWS
 ===================================================== -->
 
 <section id="news">
@@ -906,16 +957,17 @@ footer{
 
                 <i class="fa-solid fa-calendar"></i>
 
-                2026 / 06 / 16
+                <!-- ربطنا التاريخ بمعرف (ID) ليتم تغييره عبر الجافاسكربت تلقائياً -->
+                <span id="liveDate"></span>
 
             </div>
 
             <h3 class="news-title">
-كل عام وانتم بخير
+جمعة مباركة 🤍 
             </h3>
 
             <p class="news-description">
-شركة البيان تتمنى لكم سنة هجرية مباركة بالصحة والعافية وكل عام وأنتم بخير
+ إِنَّ اللَّهَ وَمَلَائِكَتَهُ يُصَلُّونَ عَلَى النَّبِيِّ ۚ يَا أَيُّهَا الَّذِينَ آمَنُوا صَلُّوا عَلَيْهِ وَسَلِّمُوا تَسْلِيمًا 
             </p>
 
             <!-- END NEWS EDIT AREA -->
@@ -927,7 +979,7 @@ footer{
 </section>
 
 <!-- =====================================================
-   CONTACT🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴🔴
+   CONTACT
 ===================================================== -->
 
 <section id="contact">
@@ -1141,19 +1193,14 @@ footer{
                 لتلبية احتياجات العملاء.
 
             </div>
-                       <br>
-<br>
-<div class="card">
-<h3>تابعنا على فيسبوك</h3>
 
-<a class="btn fb"
-href="https://www.facebook.com/share/1bUoP3nDTK/"
-target="_blank">
-
-<i class="fa-brands fa-facebook"></i>
-فيسبوك الشركة
-
-</a>
+            <!-- زر الفيسبوك المضاف حديثاً -->
+            <div class="footer-social">
+                <a href="https://www.facebook.com/share/194WJcv2RS/" target="_blank" class="facebook-btn">
+                    <i class="fa-brands fa-facebook-f"></i>
+                    زورونا على فيسبوك
+                </a>
+            </div>
 
         </div>
 
@@ -1270,67 +1317,33 @@ revealSections
 revealSections();
 
 /* =====================================================
-   LANGUAGE TOGGLE
+   AUTO UPDATE DATE
 ===================================================== */
 
-const langBtn =
-document.getElementById("langBtn");
+const liveDateElement = document.getElementById("liveDate");
+const today = new Date();
+const yyyy = today.getFullYear();
+// إضافة الصفر للأشهر والأيام التي تتكون من رقم واحد
+const mm = String(today.getMonth() + 1).padStart(2, '0');
+const dd = String(today.getDate()).padStart(2, '0');
 
-let arabic = true;
-
-langBtn.onclick = ()=>{
-
-    arabic = !arabic;
-
-    if(!arabic){
-
-        document.documentElement.dir =
-        "ltr";
-
-        document.documentElement.lang =
-        "en";
-
-        document.getElementById(
-        "logoText").innerText =
-        "Al Bayan Shipping";
-
-        document.getElementById(
-        "heroTitle").innerText =
-        "Al Bayan International Shipping";
-
-        document.getElementById(
-        "heroDesc").innerText =
-        "Fast and secure logistics solutions with premium reliability and professional global standards.";
-
-        langBtn.innerText = "AR";
-
-    }else{
-
-        document.documentElement.dir =
-        "rtl";
-
-        document.documentElement.lang =
-        "ar";
-
-        document.getElementById(
-        "logoText").innerText =
-        "شركة البيان للشحن الخارجي";
-
-        document.getElementById(
-        "heroTitle").innerText =
-        "شركة البيان للشحن الخارجي";
-
-        document.getElementById(
-        "heroDesc").innerText =
-        "نقل سريع وآمن بين الدول بأعلى درجات الموثوقية والخبرة، لنمنح أعمالك تجربة شحن احترافية بمعايير عالمية حديثة.";
-
-        langBtn.innerText = "EN";
-
-    }
-
-};
+liveDateElement.innerText = `${yyyy} / ${mm} / ${dd}`;
 
 </script>
+
+<!-- =====================================================
+   GOOGLE TRANSLATE SCRIPT
+===================================================== -->
+<script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+      pageLanguage: 'ar', 
+      includedLanguages: 'ar,en', // تحديد اللغتين العربية والإنجليزية فقط
+      layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+  }, 'google_translate_element');
+}
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 </body>
 </html>
